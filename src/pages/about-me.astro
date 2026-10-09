@@ -1,0 +1,108 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Figure from '../components/Figure.astro';
+import WhyMushrooms from '../components/WhyMushrooms.astro';
+
+const chapters = [
+  {
+    title: 'Personal',
+    image: '/images/about/personal.jpg',
+    body: [
+      'I was born in 1995 in Iraq to Egyptian parents. When I was little we moved to Egypt, where I grew up, went to university and started my career, before relocating to the UAE.',
+      'I have always been passionate about fine arts, and I studied Fashion Design alongside English Arts. Later, I discovered my true passion: business and entrepreneurship.',
+    ],
+  },
+  {
+    title: 'Career',
+    image: '/images/about/speaking-auc.jpg',
+    body: [
+      "Today I'm Co-founder & CMO of OxtonGrid, a digital transformation partner for SMEs and mid-market businesses across MENA. Alongside it, I take on marketing, paid ads and e-commerce projects through Toptal for clients across MENA and the US.",
+      'Before that, as Marketing & Growth Manager at OneCommerce, a UK-based startup, I helped expand into MENA and led its brand Shemsi period underwear across Egypt, the UAE, KSA, Kuwait, Morocco and Lebanon. I have also worked at Fotopia, the e-commerce platform Taager.com, the fulfillment startup Flextock and the F&B tech startup bites.',
+    ],
+    link: { href: '/cv', label: 'Read my CV' },
+  },
+  {
+    title: 'Travel',
+    image: '/images/about/travel-paris.jpg',
+    body: [
+      'Besides Egypt, I have travelled to 16 countries: Spain, Germany, Belgium, France, the Netherlands, Italy, Austria, Hungary, the Czech Republic, Albania, Sri Lanka, Bahrain, the UAE, Jordan, Lebanon and, of course, Iraq.',
+      'Travelling has shaped who I am. It exposed me to different cultures and realities, made me more open-minded and accepting of differences, and showed me how wonderful people are and how beautiful our planet is.',
+    ],
+  },
+  {
+    title: 'Art',
+    image: '/images/art/siwa-sunset.jpg',
+    body: [
+      "Since I was a little kid, I've loved painting, drawing and making all kinds of crafts. Art was how I expressed emotions, explored my imagination and found joy in making something beautiful.",
+      'In high school, life got more demanding and I drifted away from it, only drawing the occasional portrait for close friends. Now I feel an undeniable pull back to that creative world.',
+    ],
+    link: { href: '/art-projects', label: 'See my art' },
+  },
+  {
+    title: 'Cooking',
+    image: '/images/cooking/butter-chicken.jpg',
+    body: [
+      "Cooking has always been a passion of mine, fuelled by creativity and curiosity. It's more than preparing a meal. It's a way to express myself, experiment with flavours and connect with other cultures. I love blending ingredients from different cuisines to create dishes that are both nourishing and delicious.",
+    ],
+    link: { href: '/cooking', label: 'Visit Nourish Diary' },
+  },
+  {
+    title: 'Volunteering',
+    image: '/images/about/volunteering.jpg',
+    body: [
+      'Volunteering and working with NGOs has always been close to my heart, starting with Plan International, Terre des Hommes and AIESEC. Each experience showed me the impact dedicated, community-driven work can have.',
+      'That passion grew when I led a period poverty initiative at Shemsi, working with NGOs to bring essential products to underserved women.',
+    ],
+  },
+];
+const alts: Record<string, string> = {
+  Personal: 'Nour relaxing on the grass with headphones',
+  Career: 'Nour speaking at the Shemsi and Tadwein press conference',
+  Travel: 'Nour in front of the Louvre in Paris',
+  Art: 'Siwa Sunset, a painting by Nour',
+  Cooking: 'Butter chicken with rice, cooked by Nour',
+  Volunteering: 'Nour leading a period poverty awareness session with girls',
+};
+---
+<Layout title="About me" description="The story of Nour Essam: growing up in Egypt, a career in startups, travel, art, cooking, volunteering and a love of mushrooms.">
+  <header class="page-head wrap">
+    <span class="eyebrow">About me</span>
+    <h1>Iraq, Egypt, the UAE, and a lot in between.</h1>
+  </header>
+
+  <div class="wrap chapters">
+    {chapters.map((c, i) => (
+      <section class:list={['chapter', { flip: i % 2 === 1 }]}>
+        <Figure src={c.image} alt={alts[c.title]} ratio="4 / 3" position="50% 35%" />
+        <div>
+          <span class="eyebrow">0{i + 1}</span>
+          <h2>{c.title}</h2>
+          {c.body.map((p) => <p>{p}</p>)}
+          {c.link && <a class="link" href={c.link.href}>{c.link.label} →</a>}
+        </div>
+      </section>
+    ))}
+  </div>
+
+  <WhyMushrooms class="tint" />
+</Layout>
+
+<style>
+  .chapters { display: flex; flex-direction: column; gap: clamp(48px, 8vw, 96px); padding-bottom: clamp(56px, 9vw, 112px); }
+  .section { margin-bottom: 0; }
+  .chapter { display: grid; grid-template-columns: 1fr 1.2fr; gap: clamp(24px, 5vw, 64px); align-items: center; }
+  .chapter.flip > :global(figure) { order: 2; }
+  .chapter p { color: var(--muted); }
+  .grove { display: flex; align-items: flex-end; justify-content: center; border-bottom: 3px solid var(--moss); padding-top: 24px; }
+  .grove :global(.g) { transform-origin: 50% 100%; }
+  .grove :global(.g2) { animation: sway 7s ease-in-out infinite; }
+  .grove :global(.g1) { animation: sway 8s ease-in-out -3s infinite reverse; }
+  @keyframes sway { 0%, 100% { transform: rotate(-2.5deg); } 50% { transform: rotate(2.5deg); } }
+  @media (prefers-reduced-motion: reduce) { .grove :global(.g) { animation: none; } }
+
+  @media (max-width: 760px) {
+    .grove { transform: scale(.75); transform-origin: center bottom; }
+    .chapter { grid-template-columns: 1fr; }
+    .chapter.flip > :global(figure) { order: 0; }
+  }
+</style>

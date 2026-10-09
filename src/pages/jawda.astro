@@ -1,0 +1,32 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Figure from '../components/Figure.astro';
+---
+<Layout title="Jawda" description="Case study: Jawda, Taager's B2C warranty and after-sales brand, launched by Nour Essam.">
+  <header class="page-head wrap">
+    <span class="eyebrow">Case study · Marketing Manager</span>
+    <h1>Jawda: after-sales care for Taager</h1>
+    <p class="lede">
+      Jawda was the B2C subsidiary of Taager, the B2B2C social e-commerce platform. It provided a warranty on all Taager products and let end customers return and exchange orders without dealing with Taager or the seller directly.
+    </p>
+  </header>
+
+  <section class="section wrap grid two">
+    <article class="card">
+      <Figure alt="Jawda's Facebook page" ratio="16 / 10" />
+      <h3>Social media</h3>
+      <p>Facebook was Jawda's biggest channel, since the brand mainly served a mass-market audience in Egypt.</p>
+      <a class="link" href="https://www.facebook.com/jawda.online" target="_blank" rel="noopener">Jawda on Facebook →</a>
+    </article>
+    <article class="card">
+      <Figure alt="Jawda website" ratio="16 / 10" />
+      <h3>Website content</h3>
+      <p>The website's goal was a seamless request experience for the 10K+ users it served every day.</p>
+      <a class="link" href="https://www.jawdaonline.com/" target="_blank" rel="noopener">Visit the website →</a>
+    </article>
+  </section>
+</Layout>
+
+<style>
+  .card :global(figure) { margin-bottom: 20px; }
+</style>

@@ -1,0 +1,38 @@
+---
+// "Why mushrooms?" story with the interactive mushroom. Shared by the home and About pages.
+import MushroomBuddy from './MushroomBuddy.astro';
+
+interface Props {
+  class?: string;
+}
+const { class: className } = Astro.props;
+---
+<section class:list={['section', className]} id="mushrooms">
+  <div class="wrap mush">
+    <div class="buddy-wrap"><MushroomBuddy size={240} /></div>
+    <div>
+      <span class="eyebrow">A small obsession</span>
+      <h2>Why mushrooms?</h2>
+      <p class="lede">
+        If you've spotted little mushrooms growing all over this site, that's no accident. I'm a bit obsessed with them.
+      </p>
+      <p>
+        There's something magical about the way mushrooms grow. They don't wait for perfect conditions. They push up
+        through the dark, in damp corners and on fallen wood, in places where almost nothing else can survive. They
+        ask for very little care, and yet they grow into something beautiful and genuinely useful: they feed us, heal
+        us and bring the forest floor back to life.
+      </p>
+      <p>
+        I relate to that. I don't need perfect conditions to grow either. Give me a difficult environment, a little
+        room and some time, and I'll find a way to turn it into something beautiful and useful.
+      </p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .mush { display: grid; grid-template-columns: 1fr 1.3fr; gap: clamp(32px, 6vw, 80px); align-items: center; }
+  .mush p:not(.lede) { color: var(--muted); }
+  .buddy-wrap { display: flex; justify-content: center; }
+  @media (max-width: 760px) { .mush { grid-template-columns: 1fr; } }
+</style>

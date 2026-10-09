@@ -1,0 +1,58 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Figure from '../components/Figure.astro';
+import { shemsiProjects, shemsiSocial } from '../data/work';
+---
+<Layout title="Shemsi MENA" description="Case study: how Nour Essam grew Shemsi period underwear across MENA through brand, content, influencers, events and performance marketing.">
+  <header class="page-head wrap">
+    <span class="eyebrow">Case study · Brand Manager</span>
+    <h1>Shemsi: building a period-care brand across MENA</h1>
+    <p class="lede">
+      As Growth & Marketing Manager at OneCommerce I led Shemsi period underwear in Egypt, the UAE, KSA, Kuwait, Morocco and Lebanon, growing sales 11× in a year.
+    </p>
+    <div class="btn-row">
+      <a class="btn primary" href="/successful-marketing-campaigns">Campaigns</a>
+      <a class="btn ghost" href="/photoshoot-highlights">Photoshoot</a>
+    </div>
+  </header>
+
+  <section class="section wrap">
+    <div class="grid three">
+      {shemsiProjects.map((p) => (
+        <article class="card proj">
+          <Figure src={p.image} alt={p.title} ratio="3 / 2" />
+          <h3>{p.title}</h3>
+          <p>{p.text}</p>
+          {p.link && (
+            <a class="link" href={p.link.href} target={p.link.href.startsWith('http') ? '_blank' : undefined} rel="noopener">
+              {p.link.label} →
+            </a>
+          )}
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="section tint">
+    <div class="wrap">
+      <span class="eyebrow">Social media growth</span>
+      <h2>Communities I grew</h2>
+      <div class="grid four">
+        {shemsiSocial.map((s) => (
+          <a class="card" href={s.href} target="_blank" rel="noopener">
+            <span class="muted">{s.platform}</span>
+            <strong class="stat">{s.stat}</strong>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .page-head .lede { margin-bottom: 28px; }
+  .proj { padding: 14px 14px 24px; }
+  .proj > :not(figure) { margin-inline: 10px; }
+  .proj :global(figure) { margin-bottom: 18px; }
+  .stat { font-family: var(--serif); font-weight: 500; font-size: 1.5rem; line-height: 1.2; margin-top: 6px; }
+</style>

@@ -1,0 +1,263 @@
+---
+import '../styles/global.css';
+import { site, nav, bookingHref } from '../data/site';
+import ContactLinks from '../components/ContactLinks.astro';
+import Mushroom from '../components/Mushroom.astro';
+import MushroomPatch from '../components/MushroomPatch.astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+  footerCta?: boolean;
+}
+const { title, description = site.description, footerCta = true } = Astro.props;
+const fullTitle = title ? `${title} · ${site.name}` : `${site.name} · ${site.tagline}`;
+const path = Astro.url.pathname.replace(/\/$/, '') || '/';
+const canonical = new URL(Astro.url.pathname, site.url).href;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta name="twitter:card" content="summary" />
+    <script is:inline>document.documentElement.classList.add('js');</script>
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <header class="site-header">
+      <div class="wrap bar">
+        <a href="/" class="brand"><Mushroom variant="amanita" size={30} class="brand-mark" />Nour Essam</a>
+        <button class="menu-btn" aria-expanded="false" aria-controls="site-nav">Menu</button>
+        <nav id="site-nav" aria-label="Main">
+          {nav.map((item) => (
+            <a href={item.href} aria-current={path === item.href ? 'page' : undefined}>{item.label}</a>
+          ))}
+          <a class="book" href={bookingHref} target="_blank" rel="noopener">Book a call</a>
+        </nav>
+      </div>
+      <div class="progress" aria-hidden="true"></div>
+    </header>
+
+    <main id="main"><slot /></main>
+    <script is:inline>
+      // Tag page content for scroll reveals before first paint (skips the hero,
+      // which has its own entrance, and anything already set up by hand).
+      (function () {
+        var skip = '.hero-shell, .forest, [data-reveal], [data-grow], .marquee';
+        var groups = '.grid, .gallery, .timeline, .chapters, .engagements, .cycle, .og-panel ul, .logos-band';
+        var tag = function (el, d) {
+          if (el.closest(skip) || el.parentElement.closest('[data-reveal]')) return;
+          el.setAttribute('data-reveal', '');
+          if (d) el.style.setProperty('--d', d + 's');
+        };
+        document.querySelectorAll('#main ' + groups.split(', ').join(' > *, #main ') + ' > *').forEach(function (el) {
+          tag(el, ((Array.prototype.indexOf.call(el.parentElement.children, el) % 4) * 0.09).toFixed(2));
+        });
+        document.querySelectorAll('#main .wrap > *, #main .page-head > *').forEach(function (el, i) {
+          if (el.matches(groups)) return;
+          tag(el, 0);
+        });
+      })();
+    </script>
+
+    <footer class="site-footer">
+      <div class="wrap"><MushroomPatch align="left" /></div>
+      {footerCta && <div class="wrap foot">
+        <div>
+          <p class="foot-title">Let's work together</p>
+          <p class="muted">Brand growth, mentoring, consulting or a custom painting: say hello.</p>
+        </div>
+        <div class="foot-actions">
+          <a class="btn primary" href={bookingHref} target="_blank" rel="noopener">Book a call</a>
+          <ContactLinks />
+        </div>
+      </div>}
+      <div class="wrap legal muted">© {new Date().getFullYear()} {site.name}</div>
+    </footer>
+
+    <script>
+      // Reveal sections as they scroll into view.
+      const io = new IntersectionObserver((entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); }
+        }
+      }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+      document.querySelectorAll('[data-reveal], [data-grow]').forEach((el) => io.observe(el));
+
+      // Mycelium progress line under the header.
+      const bar = document.querySelector<HTMLElement>('.progress');
+      const onScroll = () => {
+        const max = document.documentElement.scrollHeight - innerHeight;
+        bar?.style.setProperty('--p', String(max > 0 ? scrollY / max : 0));
+      };
+      addEventListener('scroll', () => requestAnimationFrame(onScroll), { passive: true });
+      onScroll();
+
+      const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const finePointer = matchMedia('(hover: hover) and (pointer: fine)').matches;
+      const root = document.documentElement;
+
+      // Scrolling blows a little wind through the mushrooms.
+      if (!calm) {
+        let lastY = scrollY, lean = 0, ticking = false;
+        const settle = () => {
+          const v = scrollY - lastY; lastY = scrollY;
+          lean += (Math.max(-14, Math.min(14, v * 0.6)) - lean) * 0.25;
+          if (Math.abs(lean) < 0.05 && v === 0) { lean = 0; root.style.setProperty('--lean', '0'); ticking = false; return; }
+          root.style.setProperty('--lean', lean.toFixed(2));
+          requestAnimationFrame(settle);
+        };
+        addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(settle); } }, { passive: true });
+      }
+
+      // Mushrooms lean toward a nearby cursor; the hero leaves a trail of spores.
+      if (!calm && finePointer) {
+        const shrooms = [...document.querySelectorAll<SVGElement>('svg.mushroom')];
+        const hero = document.querySelector('.hero-shell');
+        let px = -999, py = -999, queued = false, lastSpore = 0;
+        const update = () => {
+          queued = false;
+          for (const m of shrooms) {
+            const r = m.getBoundingClientRect();
+            if (r.bottom < 0 || r.top > innerHeight) continue;
+            const dx = px - (r.left + r.width / 2), dy = py - (r.top + r.height / 2);
+            const dist = Math.hypot(dx, dy);
+            const t = dist < 240 ? Math.max(-16, Math.min(16, dx / 9)) * (1 - dist / 240) : 0;
+            m.style.setProperty('--tilt', `${t.toFixed(1)}deg`);
+          }
+        };
+        addEventListener('pointermove', (e) => {
+          px = e.clientX; py = e.clientY;
+          if (!queued) { queued = true; requestAnimationFrame(update); }
+          const now = performance.now();
+          if (hero && now - lastSpore > 70 && (e.target as Element).closest?.('.hero-shell')) {
+            lastSpore = now;
+            const s = document.createElement('span');
+            s.className = 'spore-trail';
+            s.style.left = `${px}px`; s.style.top = `${py}px`;
+            document.body.appendChild(s);
+            s.animate(
+              [{ transform: 'translate(-50%,-50%) scale(1)', opacity: .9 },
+               { transform: `translate(calc(-50% + ${(Math.random() - .5) * 40}px), calc(-50% - ${30 + Math.random() * 40}px)) scale(.3)`, opacity: 0 }],
+              { duration: 1100 + Math.random() * 600, easing: 'ease-out' },
+            ).onfinish = () => s.remove();
+          }
+        }, { passive: true });
+      }
+
+      // Spore bursts, shared with the interactive mushroom.
+      const sporeBurst = (x: number, y: number, n = 14) => {
+        if (calm) return;
+        root.classList.add('burst-used');
+        const spread = 40 + Math.min(n, 60) * 2;
+        for (let i = 0; i < n; i++) {
+          const s = document.createElement('span');
+          s.className = 'spore-burst';
+          s.style.left = `${x}px`;
+          s.style.top = `${y}px`;
+          document.body.appendChild(s);
+          const angle = Math.random() * Math.PI * 2;
+          const dist = 30 + Math.random() * spread;
+          s.animate(
+            [
+              { transform: 'translate(-50%, -50%) scale(1)', opacity: 1 },
+              { transform: `translate(calc(-50% + ${Math.cos(angle) * dist}px), calc(-50% + ${Math.sin(angle) * dist - 40}px)) scale(.4)`, opacity: 0 },
+            ],
+            { duration: 900 + Math.random() * 700, easing: 'cubic-bezier(.2,.7,.3,1)' },
+          ).onfinish = () => s.remove();
+        }
+      };
+      (window as any).__sporeBurst = sporeBurst;
+
+      // Click a mushroom to release spores.
+      document.addEventListener('click', (ev) => {
+        const m = (ev.target as Element).closest?.('[data-burst]');
+        if (!m || calm) return;
+        sporeBurst(ev.clientX, ev.clientY);
+        m.animate([{ scale: '1' }, { scale: '1.12 .9' }, { scale: '1' }], { duration: 380, easing: 'ease-out' });
+      });
+
+      // Photos drift gently as you scroll.
+      if (!calm) {
+        const imgs = [...document.querySelectorAll<HTMLElement>('#main figure .frame:not(.natural) img')];
+        const drift = () => {
+          for (const img of imgs) {
+            const r = img.parentElement!.getBoundingClientRect();
+            if (r.bottom < 0 || r.top > innerHeight) continue;
+            const p = (r.top + r.height / 2 - innerHeight / 2) / innerHeight;
+            img.style.translate = `0 ${(p * -24).toFixed(1)}px`;
+          }
+        };
+        addEventListener('scroll', () => requestAnimationFrame(drift), { passive: true });
+        drift();
+      }
+
+      const btn = document.querySelector('.menu-btn');
+      const navEl = document.getElementById('site-nav');
+      btn?.addEventListener('click', () => {
+        const open = btn.getAttribute('aria-expanded') === 'true';
+        btn.setAttribute('aria-expanded', String(!open));
+        navEl?.classList.toggle('open', !open);
+      });
+    </script>
+  </body>
+</html>
+
+<style>
+  .skip { position: absolute; left: -9999px; }
+  .skip:focus { left: 16px; top: 16px; z-index: 100; background: var(--surface); padding: 8px 12px; }
+
+  .progress {
+    position: absolute; left: 0; bottom: -1px; height: 2px; width: 100%;
+    background: linear-gradient(90deg, var(--moss), var(--cap-tan));
+    transform-origin: left; transform: scaleX(var(--p, 0));
+  }
+  .site-header {
+    position: sticky; top: 0; z-index: 50;
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter: blur(10px); border-bottom: 1px solid var(--line);
+  }
+  .bar { display: flex; align-items: center; justify-content: space-between; height: 68px; }
+  .brand { display: inline-flex; align-items: center; gap: 8px; font-family: var(--serif); font-size: 1.35rem; font-weight: 600; text-decoration: none; }
+  .brand :global(.brand-mark) { transition: transform .4s cubic-bezier(.3, 1.6, .5, 1); }
+  .brand:hover :global(.brand-mark) { transform: rotate(-12deg); }
+  nav { display: flex; gap: 4px; }
+  nav a {
+    padding: 8px 14px; border-radius: 999px; text-decoration: none;
+    font-size: 0.95rem; font-weight: 500; color: var(--muted); transition: color .2s, background .2s;
+  }
+  nav a:hover { color: var(--ink); }
+  nav a[aria-current='page'] { color: var(--ink); background: var(--surface-2); }
+  .menu-btn { display: none; }
+
+  @media (max-width: 900px) {
+    nav a.book { margin: 8px 0 0; text-align: center; }
+    .menu-btn {
+      display: block; background: none; border: 1px solid var(--line); border-radius: 999px;
+      padding: 8px 16px; font: 500 0.95rem var(--sans); color: var(--ink); cursor: pointer;
+    }
+    nav {
+      display: none; position: absolute; top: 68px; left: 0; right: 0; flex-direction: column;
+      background: var(--bg); border-bottom: 1px solid var(--line); padding: 8px var(--gutter) 16px;
+    }
+    nav.open { display: flex; }
+    nav a { padding: 12px 8px; border-radius: 8px; }
+  }
+
+  .site-footer { padding: 0 0 32px; }
+  .foot { margin-top: 40px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 24px; }
+  nav a.book { margin-left: 8px; background: var(--accent); color: var(--accent-ink); }
+  nav a.book:hover { color: var(--accent-ink); filter: brightness(1.08); }
+  .foot-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+  .foot-title { font-family: var(--serif); font-size: 1.6rem; margin: 0 0 4px; }
+  .legal { margin-top: 32px; font-size: 0.85rem; }
+</style>

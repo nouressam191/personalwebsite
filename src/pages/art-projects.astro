@@ -1,0 +1,41 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Figure from '../components/Figure.astro';
+import { art } from '../data/work';
+import { contact } from '../data/site';
+---
+<Layout title="Art projects" description="Paintings by Nour Essam, available to buy, with custom commissions available.">
+  <header class="page-head wrap">
+    <span class="eyebrow">Art projects</span>
+    <h1>Back to the canvas</h1>
+    <p class="lede">
+      Painting was my first love. After years away, I'm making art again: landscapes, dreamers and the odd Studio Ghibli tribute.
+    </p>
+  </header>
+
+  <section class="wrap gallery">
+    {art.map((a) => <Figure src={a.image} alt={a.title} caption={a.title} ratio="1 / 1" natural />)}
+  </section>
+
+  <section class="section tint">
+    <div class="wrap commission">
+      <div>
+        <span class="eyebrow">Buy or commission</span>
+        <h2>Love a piece, or want one made for you?</h2>
+        <p class="lede">My ready paintings are available to buy, and I take commissions for custom paintings and portraits. Message me about a piece you like, or tell me what you have in mind.</p>
+      </div>
+      <div class="btn-row">
+        <a class="btn primary" href={contact.whatsapp} target="_blank" rel="noopener">Message on WhatsApp</a>
+        <a class="btn ghost" href={`mailto:${contact.email}?subject=Art%20enquiry`}>Email me</a>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .gallery {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr));
+    gap: 28px 20px; padding-bottom: clamp(56px, 9vw, 112px);
+  }
+  .commission { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 24px; }
+</style>

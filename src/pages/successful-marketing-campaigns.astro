@@ -1,0 +1,33 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Figure from '../components/Figure.astro';
+import { campaigns } from '../data/work';
+---
+<Layout title="Marketing campaigns" description="Successful Shemsi marketing campaigns led by Nour Essam: Black Friday, Ramadan, GCC boost and more.">
+  <header class="page-head wrap">
+    <a class="link back" href="/shemsi-mena">← Shemsi case study</a>
+    <h1>Successful marketing campaigns</h1>
+    <p class="lede">A selection of the campaigns I ran for Shemsi over two years.</p>
+  </header>
+
+  <section class="wrap grid three list">
+    {campaigns.map((c) => (
+      <article class="card c">
+        <Figure src={c.image} alt={`${c.title} campaign creative`} ratio="1 / 1" />
+        <h3>{c.title}</h3>
+        {c.text && <p>{c.text}</p>}
+        <p class="channels"><span>Channels</span>{c.channels}</p>
+      </article>
+    ))}
+  </section>
+</Layout>
+
+<style>
+  .back { display: inline-block; margin-bottom: 20px; }
+  .list { padding-bottom: clamp(56px, 9vw, 112px); }
+  .c { padding: 14px 14px 22px; }
+  .c > :not(figure) { margin-inline: 10px; }
+  .c :global(figure) { margin-bottom: 18px; }
+  .channels { font-size: 0.9rem; margin-top: auto; margin-bottom: 0; }
+  .channels span { display: block; font: 600 0.72rem var(--sans); letter-spacing: .12em; text-transform: uppercase; color: var(--accent); margin-bottom: 2px; }
+</style>

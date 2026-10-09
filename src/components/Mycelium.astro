@@ -1,0 +1,91 @@
+---
+// A procedurally grown mycelium network (seeded, so it's identical on every build).
+// Threads draw themselves in when the element (or an ancestor) gets `.is-in`,
+// or straight away with `animate="load"`.
+interface Props {
+  seed?: number;
+  roots?: number;
+  width?: number;
+  height?: number;
+  animate?: 'load' | 'reveal';
+  class?: string;
+}
+const { seed = 7, roots = 9, width = 1200, height = 420, animate = 'reveal', class: className } = Astro.props;
+
+function rng(a: number) {
+  return () => {
+    a |= 0; a = (a + 0x6d2b79f5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+const rand = rng(seed);
+const between = (lo: number, hi: number) => lo + rand() * (hi - lo);
+
+type Thread = { d: string; delay: number; w: number };
+const threads: Thread[] = [];
+const tips: { x: number; y: number; delay: number }[] = [];
+
+function grow(x: number, y: number, angle: number, step: number, depth: number, delay: number) {
+  let d = `M${x.toFixed(1)} ${y.toFixed(1)}`;
+  const segments = Math.round(between(3, 6));
+  for (let i = 0; i < segments; i++) {
+    angle += between(-0.45, 0.45);
+    // keep growing mostly upward
+    angle = Math.max(-Math.PI + 0.25, Math.min(-0.25, angle));
+    const nx = x + Math.cos(angle) * step;
+    const ny = y + Math.sin(angle) * step;
+    const bend = between(-0.5, 0.5) * step;
+    const cx = (x + nx) / 2 - Math.sin(angle) * bend;
+    const cy = (y + ny) / 2 + Math.cos(angle) * bend;
+    d += ` Q${cx.toFixed(1)} ${cy.toFixed(1)} ${nx.toFixed(1)} ${ny.toFixed(1)}`;
+    if (depth < 3 && rand() < 0.42) {
+      grow(nx, ny, angle + (rand() < 0.5 ? -1 : 1) * between(0.5, 1.1), step * 0.72, depth + 1, delay + (i + 1) * 0.18);
+    }
+    x = nx; y = ny;
+    if (y < 10) break;
+  }
+  threads.push({ d, delay, w: Math.max(0.6, 2.2 - depth * 0.5) });
+  if (depth > 0) tips.push({ x, y, delay: delay + segments * 0.18 });
+}
+
+for (let r = 0; r < roots; r++) {
+  const x = (width / roots) * (r + between(0.15, 0.85));
+  grow(x, height + 4, -Math.PI / 2 + between(-0.5, 0.5), between(42, 64), 0, between(0, 0.6));
+}
+---
+<svg
+  class:list={['mycelium', `animate-${animate}`, className]}
+  viewBox={`0 0 ${width} ${height}`}
+  preserveAspectRatio="xMidYMax slice"
+  aria-hidden="true"
+  focusable="false"
+>
+  {threads.map((t) => (
+    <path d={t.d} pathLength="1" style={`--delay:${t.delay.toFixed(2)}s; stroke-width:${t.w}`} />
+  ))}
+  {tips.map((t) => (
+    <circle cx={t.x.toFixed(1)} cy={t.y.toFixed(1)} r="2.2" style={`--delay:${t.delay.toFixed(2)}s`} />
+  ))}
+</svg>
+
+<style>
+  .mycelium { display: block; width: 100%; height: 100%; overflow: visible; color: var(--cap-tan); }
+  path { fill: none; stroke: currentColor; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 1; }
+  circle { fill: currentColor; opacity: 0; }
+
+  .animate-load path,
+  :global(.is-in) .animate-reveal path { animation: thread 2.4s cubic-bezier(.4, .1, .2, 1) var(--delay) forwards; }
+  .animate-load circle,
+  :global(.is-in) .animate-reveal circle { animation: tip .6s ease var(--delay) forwards, glow 3.2s ease-in-out calc(var(--delay) + .6s) infinite; }
+
+  @keyframes thread { to { stroke-dashoffset: 0; } }
+  @keyframes tip { to { opacity: 1; } }
+  @keyframes glow { 0%, 100% { opacity: 1; } 50% { opacity: .35; } }
+
+  @media (prefers-reduced-motion: reduce) {
+    path { stroke-dashoffset: 0; animation: none !important; }
+    circle { opacity: 1; animation: none !important; }
+  }
+</style>

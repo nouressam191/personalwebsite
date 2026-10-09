@@ -1,0 +1,41 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Figure from '../components/Figure.astro';
+import Mushroom from '../components/Mushroom.astro';
+import { contact } from '../data/site';
+---
+<Layout title="Nourish Diary" description="Nourish Diary: Nour Essam's nourishing recipes inspired by cuisines from around the world.">
+  <section class="wrap page-head split">
+    <div>
+      <span class="eyebrow">Cooking</span>
+      <h1>Nourish Diary</h1>
+      <p class="lede">
+        My favourite nourishing recipes, each inspired by a cuisine from somewhere in the world, are coming here soon. They reflect my love of exploring flavours and blending different cultures into wholesome meals.
+      </p>
+      <p class="muted">
+        Until then, follow along on Instagram, where I regularly post what I've been cooking. Maybe you'll find inspiration for your own kitchen adventures.
+      </p>
+      <a class="btn primary" href={contact.instagramFood} target="_blank" rel="noopener">@nour.ish.diary on Instagram</a>
+    </div>
+    <div class="dish">
+      <Figure src="/images/cooking/butter-chicken.jpg" alt="Butter chicken with rice from Nourish Diary" ratio="1 / 1" />
+      <Mushroom variant="chanterelle" size={70} class="m a" />
+      <Mushroom variant="button" size={56} class="m b" />
+      <Mushroom variant="chanterelle" size={46} class="m c" />
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .split {
+    display: grid; grid-template-columns: 1.2fr 1fr; gap: clamp(32px, 6vw, 72px);
+    align-items: center; padding-bottom: clamp(56px, 9vw, 112px);
+  }
+  .split .muted { margin-bottom: 28px; }
+  @media (max-width: 760px) { .split { grid-template-columns: 1fr; } }
+  .dish { position: relative; margin-bottom: 20px; }
+  .dish :global(.m) { position: absolute; bottom: -20px; }
+  .dish :global(.a) { right: 18px; }
+  .dish :global(.b) { right: 74px; bottom: -18px; }
+  .dish :global(.c) { right: -14px; bottom: -18px; transform: rotate(10deg); }
+</style>

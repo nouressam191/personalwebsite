@@ -1,0 +1,108 @@
+---
+// Printable CV in the layout of Nour's own document. `npm run cv:pdf` renders it
+// to public/Nour-Essam-CV.pdf, which the /cv page offers as a download.
+import {
+  profile, contactLine, cvDocument, volunteering, education, skills, tools, languages, courses,
+} from '../data/cv';
+
+// Turns `**bold**` markers into <strong> segments.
+const parts = (text: string) => text.split('**').map((t, i) => ({ t, bold: i % 2 === 1 }));
+const docEducation = education.filter((e) => e.inDocument !== false);
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>Nour Essam CV</title>
+    <style is:inline>
+      @page { size: Letter; margin: 0.7in 1in 0.8in; }
+      * { box-sizing: border-box; }
+      body { margin: 0; background: #fff; color: #000; font: 11pt/1.35 Arial, Helvetica, sans-serif; }
+      .page { max-width: 6.5in; margin: 0 auto; padding: 24px 0; }
+      @media print { .page { padding: 0; } }
+      h1 { text-align: center; font-size: 30pt; font-weight: 700; margin: 0 0 14pt; letter-spacing: -0.3pt; }
+      .contact { text-align: center; margin: 0 0 8pt; }
+      .contact a { color: #1155cc; }
+      hr { border: 0; border-top: 1px solid #888; margin: 12pt 0; }
+      h2 { font-size: 11pt; font-weight: 700; text-decoration: underline; text-transform: uppercase; margin: 14pt 0 10pt; }
+      h3 { font-size: 11pt; font-weight: 700; margin: 0; }
+      .org { margin: 0 0 8pt; }
+      .org em { font-style: italic; }
+      ul { margin: 0 0 4pt; padding-left: 38pt; list-style: none; }
+      ul:not(.dots) li::before { content: '●'; display: inline-block; width: 16pt; margin-left: -16pt; font-size: 9pt; vertical-align: 1pt; }
+      li { margin: 0 0 1pt; }
+      ul.dots { list-style: none; padding-left: 38pt; }
+      ul.dots li::before { content: '.'; display: inline-block; width: 14pt; margin-left: -14pt; font-weight: 700; }
+      p { margin: 0 0 6pt; }
+      .role { break-inside: avoid; }
+      .note { font-style: italic; margin: 0 0 8pt; }
+      .line { margin: 0; font-size: 10pt; }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <h1>Nour Essam</h1>
+      <p class="contact">
+        {contactLine.location} | {contactLine.phone} | <a href={`mailto:${contactLine.email}`}>{contactLine.email}</a>
+      </p>
+      <p class="contact">
+        LinkedIn: <a href={contactLine.linkedin}>{contactLine.linkedinHandle}</a> | Website: <a href={`https://www.${contactLine.website}`}>{contactLine.website}</a>
+      </p>
+      <hr />
+
+      <h2>Profile</h2>
+      <p>{profile}</p>
+      <hr />
+
+      <h2>Professional experience</h2>
+      {cvDocument.experience.map((r, i) => (
+        <section class="role">
+          <h3>{r.title}</h3>
+          <p class="org"><strong>{r.org}</strong> | {r.location} (<em>{r.period}</em>)</p>
+          {r.bullets && (
+            <ul>
+              {r.bullets.map((b) => <li>{parts(b).map((x) => (x.bold ? <strong>{x.t}</strong> : x.t))}</li>)}
+            </ul>
+          )}
+          {r.summary && <p>{r.summary}</p>}
+          {i < cvDocument.experience.length - 1 && <hr />}
+        </section>
+      ))}
+      <hr />
+
+      <h3>FREELANCE EXPERIENCES</h3>
+      <p class="note">({cvDocument.freelanceNote})</p>
+      <ul>
+        {cvDocument.freelance.map((b) => <li>{parts(b).map((x) => (x.bold ? <strong>{x.t}</strong> : x.t))}</li>)}
+      </ul>
+      <hr />
+
+      <h2>Volunteering &amp; leadership</h2>
+      <ul class="dots">{volunteering.map((v) => <li>{v.org} {v.period.replace(/\s/g, '')}</li>)}</ul>
+      <hr />
+
+      <h2>Skills</h2>
+      <p>{skills.join(' - ')}</p>
+      <hr />
+
+      <h2>Tech environment experience</h2>
+      <p>{tools.join(' - ')}</p>
+      <hr />
+
+      <h2>Education</h2>
+      {docEducation.map((e) => (
+        <p class="line">{e.degree} | {e.school ?? e.place} | {e.period.replace(/\s–\s/, ' - ')}</p>
+      ))}
+      <hr />
+
+      <h2>Languages</h2>
+      <ul class="dots">{languages.map((l) => <li>{l.name} ({l.level})</li>)}</ul>
+      <hr />
+
+      <h2>Courses</h2>
+      <ul class="dots">{courses.map((c) => <li>{c}</li>)}</ul>
+    </main>
+  </body>
+</html>

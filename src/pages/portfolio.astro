@@ -1,0 +1,35 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Figure from '../components/Figure.astro';
+import { portfolio } from '../data/work';
+---
+<Layout title="Portfolio" description="Selected brand and growth work by Nour Essam: Shemsi, Jawda, Flextock and more.">
+  <header class="page-head wrap">
+    <span class="eyebrow">Portfolio</span>
+    <h1>Selected work</h1>
+    <p class="lede">Brands I've built, launched and grown across MENA and the US.</p>
+  </header>
+
+  <section class="wrap grid two work">
+    {portfolio.map((p) => {
+      const Tag = p.href ? 'a' : 'div';
+      return (
+        <Tag class="card item" href={p.href || undefined}>
+          <Figure src={p.image} alt={`${p.company} project image`} ratio="16 / 10" />
+          <span class="eyebrow">{p.role}</span>
+          <h3>{p.company}</h3>
+          <p>{p.text}</p>
+          {p.href && <span class="link">View details →</span>}
+        </Tag>
+      );
+    })}
+  </section>
+</Layout>
+
+<style>
+  .work { padding-bottom: clamp(56px, 9vw, 112px); }
+  .item { padding: 14px 14px 24px; }
+  .item > :not(figure) { margin-inline: 12px; }
+  .item :global(figure) { margin-bottom: 20px; }
+  .item .eyebrow { margin-bottom: 8px; }
+</style>

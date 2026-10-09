@@ -1,0 +1,128 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { headline, profile, experience, education, skills, tools, languages, courses, volunteering } from '../data/cv';
+import { contact } from '../data/site';
+import ToptalBadge from '../components/ToptalBadge.astro';
+---
+<Layout title="CV" description="Experience, education and skills of Nour Essam, Growth Marketing and Brand Manager.">
+  <header class="page-head wrap cv-head">
+    <div>
+      <span class="eyebrow">Curriculum vitae</span>
+      <h1>{headline}</h1>
+      <p class="lede">{profile}</p>
+      <div class="btn-row no-print">
+        <a class="btn primary" href="/Nour-Essam-CV.pdf" download>Download CV (PDF)</a>
+        <a class="btn ghost" href={contact.linkedin} target="_blank" rel="noopener">LinkedIn profile</a>
+      </div>
+    </div>
+    <div class="badge no-print"><ToptalBadge /></div>
+  </header>
+
+  <section class="section wrap">
+    <h2>Experience</h2>
+    <ol class="timeline">
+      {experience.map((r) => (
+        <li class="role">
+          <div class="when">
+            {r.period && <span>{r.period}</span>}
+            {r.location && <span class="muted">{r.location}</span>}
+          </div>
+          <div class="card">
+            <h3>{r.company}{r.via && <span class="via">via {r.via}</span>}{r.freelance && <span class="via">Freelance</span>}</h3>
+            <p class="title">{r.title}</p>
+            {r.about && <p>{r.about}</p>}
+            {r.intro && <p>{r.intro}</p>}
+            {r.points && <ul class="points">{r.points.map((x) => <li>{x}</li>)}</ul>}
+            {r.responsibilities && r.highlights && (
+              <div class="cols">
+                <div>
+                  <h4>Responsibilities</h4>
+                  <ul>{r.responsibilities.map((x) => <li>{x}</li>)}</ul>
+                </div>
+                <div>
+                  <h4>Highlights</h4>
+                  <ul class="hl">{r.highlights.map((x) => <li>{x}</li>)}</ul>
+                </div>
+              </div>
+            )}
+          </div>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <section class="section tint">
+    <div class="wrap grid two">
+      <div>
+        <h2>Education</h2>
+        {education.map((e) => (
+          <div class="edu">
+            <strong>{e.degree}</strong>
+            <span class="muted">{[e.school ?? e.place, e.period].filter(Boolean).join(' · ')}</span>
+          </div>
+        ))}
+      </div>
+      <div>
+        <h2>Skills</h2>
+        <ul class="chips">{skills.map((s) => <li>{s}</li>)}</ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap grid two">
+      <div>
+        <h2>Tools I work with</h2>
+        <ul class="chips">{tools.map((t) => <li>{t}</li>)}</ul>
+      </div>
+      <div class="side-lists">
+        <div>
+          <h2>Volunteering & leadership</h2>
+          {volunteering.map((v) => (
+            <div class="edu"><strong>{v.org}</strong><span class="muted">{v.period}</span></div>
+          ))}
+        </div>
+        <div>
+          <h2>Languages</h2>
+          {languages.map((l) => (
+            <div class="edu"><strong>{l.name}</strong><span class="muted">{l.level}</span></div>
+          ))}
+        </div>
+        <div>
+          <h2>Courses</h2>
+          <ul class="courses">{courses.map((c) => <li>{c}</li>)}</ul>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .page-head .lede { margin-bottom: 28px; }
+  .cv-head { display: grid; grid-template-columns: 1fr auto; gap: 48px; align-items: center; }
+  @media (max-width: 860px) { .cv-head { grid-template-columns: 1fr; } }
+  .side-lists { display: flex; flex-direction: column; gap: 32px; }
+  .side-lists h2 { font-size: 1.5rem; }
+  .courses li::marker { color: var(--accent); }
+  .timeline { list-style: none; padding: 0; margin: 32px 0 0; display: flex; flex-direction: column; gap: 28px; }
+  .role { display: grid; grid-template-columns: 180px 1fr; gap: 24px; }
+  .when { display: flex; flex-direction: column; font-weight: 600; font-size: 0.95rem; padding-top: 28px; }
+  .when .muted { font-weight: 400; }
+  .title { color: var(--accent) !important; font-weight: 600; }
+  .via {
+    margin-left: 10px; padding: 3px 10px; border: 1px solid var(--line); border-radius: 999px;
+    font: 500 0.75rem var(--sans); color: var(--muted); vertical-align: middle;
+  }
+  .points li::marker { color: var(--accent); }
+  .cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 24px; margin-top: 8px; }
+  h4 { font: 600 0.78rem var(--sans); letter-spacing: .12em; text-transform: uppercase; margin: 0 0 8px; }
+  ul:not(.chips) { margin: 0; padding-left: 18px; color: var(--muted); }
+  ul li { margin-bottom: 4px; }
+  .hl li::marker { color: var(--accent); }
+  .hl { color: var(--ink) !important; }
+  .edu { display: flex; flex-direction: column; margin-bottom: 18px; }
+  @media (max-width: 700px) {
+    .role { grid-template-columns: 1fr; gap: 8px; }
+    .when { padding-top: 0; flex-direction: row; gap: 12px; flex-wrap: wrap; }
+  }
+</style>

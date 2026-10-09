@@ -1,0 +1,24 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Figure from '../components/Figure.astro';
+import { photoshoot } from '../data/work';
+---
+<Layout title="Photoshoot highlights" description="Highlights from the Shemsi 2024 product photoshoot, art-directed by Nour Essam.">
+  <header class="page-head wrap">
+    <a class="link back" href="/shemsi-mena">← Shemsi case study</a>
+    <h1>Shemsi photoshoot 2024</h1>
+    <p class="lede">I led this shoot end to end: moodboard, photographer, stylist, make-up artist and models.</p>
+  </header>
+
+  <section class="wrap gallery">
+    {photoshoot.map((p) => <Figure src={p.image} alt={p.alt} ratio="4 / 5" />)}
+  </section>
+</Layout>
+
+<style>
+  .back { display: inline-block; margin-bottom: 20px; }
+  .gallery {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr));
+    gap: 16px; padding-bottom: clamp(56px, 9vw, 112px);
+  }
+</style>

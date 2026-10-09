@@ -1,0 +1,43 @@
+---
+// A little patch of mushrooms growing out of a mossy line.
+// Used as a section divider and along the footer.
+import Mushroom from './Mushroom.astro';
+
+interface Props {
+  align?: 'left' | 'center' | 'right';
+  class?: string;
+}
+const { align = 'center', class: className } = Astro.props;
+
+const patch = [
+  { variant: 'button', size: 30 },
+  { variant: 'amanita', size: 52 },
+  { variant: 'parasol', size: 44 },
+  { variant: 'button', size: 22 },
+  { variant: 'chanterelle', size: 32 },
+] as const;
+---
+<div class:list={['patch', `align-${align}`, className]} aria-hidden="true" data-grow>
+  <div class="cluster">
+    {patch.map((m, i) => (
+      <Mushroom variant={m.variant} size={m.size} style={`--i:${i}`} data-burst />
+    ))}
+  </div>
+</div>
+
+<style>
+  .patch { display: flex; border-bottom: 2px solid var(--moss); }
+  .align-left { justify-content: flex-start; }
+  .align-center { justify-content: center; }
+  .align-right { justify-content: flex-end; }
+  .cluster { display: flex; align-items: flex-end; gap: 2px; margin-bottom: -1px; }
+  .cluster :global(.mushroom) {
+    transition: transform .4s cubic-bezier(.3, 1.6, .5, 1);
+  }
+  .cluster:hover :global(.mushroom) {
+    transform: rotate(calc((var(--i) - 2) * 4deg)) scale(1.06);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .cluster :global(.mushroom) { transition: none; }
+  }
+</style>

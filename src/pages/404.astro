@@ -1,0 +1,25 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Mushroom from '../components/Mushroom.astro';
+---
+<Layout title="Page not found">
+  <section class="page-head wrap lost">
+    <div>
+      <span class="eyebrow">404</span>
+      <h1>This page wandered off into the forest.</h1>
+      <p class="lede">It may have moved when the site was redesigned.</p>
+      <a class="btn primary" href="/">Back to home</a>
+    </div>
+    <div class="grove" aria-hidden="true">
+      <Mushroom variant="parasol" size={150} />
+      <Mushroom variant="amanita" size={200} />
+      <Mushroom variant="button" size={90} />
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .lost { display: grid; grid-template-columns: 1.2fr 1fr; gap: 40px; align-items: center; padding-bottom: clamp(56px, 9vw, 112px); }
+  .grove { display: flex; align-items: flex-end; justify-content: center; border-bottom: 3px solid var(--moss); }
+  @media (max-width: 760px) { .lost { grid-template-columns: 1fr; } .grove { transform: scale(.7); transform-origin: left bottom; justify-content: flex-start; } }
+</style>

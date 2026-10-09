@@ -1,0 +1,145 @@
+---
+// An interactive mushroom: eyes follow the cursor, it blinks, a tap changes its
+// colour and pressing and holding makes it grow, then burst into spores.
+interface Props {
+  size?: number;
+  class?: string;
+}
+const { size = 220, class: className } = Astro.props;
+---
+<div class:list={['buddy', className]}>
+  <button class="buddy-btn" type="button" aria-label="Play with the mushroom: tap to change its colour, press and hold to make it grow">
+    <svg viewBox="0 0 200 200" width={size} height={size} aria-hidden="true" focusable="false">
+      <ellipse class="shadow" cx="100" cy="188" rx="48" ry="7" />
+      <g class="body">
+        <path class="stem" d="M80 108 Q76 150 70 184 H130 Q124 150 120 108 Z" />
+        <g class="eyes">
+          <g class="eye" data-eye>
+            <circle cx="88" cy="140" r="9" fill="#fff" stroke="var(--ink)" stroke-width="2" />
+            <circle class="pupil" cx="88" cy="140" r="4.6" fill="var(--ink)" />
+          </g>
+          <g class="eye" data-eye>
+            <circle cx="112" cy="140" r="9" fill="#fff" stroke="var(--ink)" stroke-width="2" />
+            <circle class="pupil" cx="112" cy="140" r="4.6" fill="var(--ink)" />
+          </g>
+        </g>
+        <circle cx="77" cy="156" r="5" fill="#f2a097" opacity=".6" />
+        <circle cx="123" cy="156" r="5" fill="#f2a097" opacity=".6" />
+        <path class="mouth" d="M92 157 Q100 166 108 157" />
+        <g class="cap">
+          <path class="cap-shape" d="M16 112 Q16 26 100 24 Q184 26 184 112 Q100 130 16 112 Z" />
+          <circle cx="62" cy="62" r="10" class="spot" />
+          <circle cx="104" cy="46" r="7" class="spot" />
+          <circle cx="142" cy="72" r="12" class="spot" />
+          <circle cx="90" cy="88" r="6" class="spot" />
+          <circle cx="40" cy="94" r="5" class="spot" />
+          <circle cx="160" cy="100" r="5" class="spot" />
+        </g>
+      </g>
+    </svg>
+  </button>
+  <p class="buddy-caption">
+    <span class="buddy-tip">Tap to change my colour · hold to make me grow</span>
+  </p>
+</div>
+
+<style>
+  .buddy { display: inline-flex; flex-direction: column; align-items: center; gap: 6px; }
+  .buddy-btn {
+    --cap: var(--cap-red); --grow: 1;
+    background: none; border: 0; padding: 0; cursor: pointer; border-radius: 24px;
+    touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+  }
+  .buddy-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 6px; }
+  svg { display: block; overflow: visible; }
+  .shadow { fill: var(--ink); opacity: .1; transform-box: fill-box; transform-origin: center; transform: scaleX(var(--grow)); }
+  .body { transform-box: fill-box; transform-origin: 50% 100%; transform: scale(var(--grow)); transition: transform .5s cubic-bezier(.3, 1.6, .5, 1); }
+  .buddy-btn.holding .body { transition: none; animation: tremble .12s linear infinite; }
+  .stem { fill: var(--stem); stroke: var(--ink); stroke-width: 3; stroke-linejoin: round; }
+  .cap-shape { fill: var(--cap); stroke: var(--ink); stroke-width: 3; stroke-linejoin: round; transition: fill .4s; }
+  .spot { fill: var(--stem); }
+  .mouth { fill: none; stroke: var(--ink); stroke-width: 2.5; stroke-linecap: round; transition: d .3s; }
+  .buddy-btn:hover .mouth, .buddy-btn.holding .mouth { d: path('M90 155 Q100 170 110 155'); }
+  .cap { transform-box: fill-box; transform-origin: 50% 100%; transition: transform .3s; }
+  .buddy-btn:hover .cap { transform: translateY(-3px) rotate(-2deg); }
+  .eye { transform-box: fill-box; transform-origin: center; transition: transform .08s; }
+  .buddy-btn.blink .eye { transform: scaleY(.1); }
+  .pupil { transition: transform .12s ease-out; }
+  .buddy-btn.squish .body { animation: squish .45s ease-out; }
+  @keyframes squish { 0%, 100% { scale: 1; } 35% { scale: 1.12 .86; } 70% { scale: .95 1.06; } }
+  @keyframes tremble { 0%, 100% { translate: 0 0; } 25% { translate: -1px 0; } 75% { translate: 1px 0; } }
+  .buddy-caption { margin: 0; text-align: center; font-size: .85rem; color: var(--muted); display: flex; flex-direction: column; gap: 2px; }
+  .buddy-tip { font: italic 500 .95rem var(--serif); }
+  @media (prefers-reduced-motion: reduce) {
+    .body, .cap, .pupil { transition: none; }
+    .buddy-btn.holding .body, .buddy-btn.squish .body { animation: none; }
+  }
+</style>
+
+<script>
+  const caps = ['#c0502e', '#a87850', '#e9a23b', '#7b5ea7', '#3f7d6e', '#d96c8a'];
+  const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  document.querySelectorAll<HTMLElement>('.buddy').forEach((buddy) => {
+    const btn = buddy.querySelector<HTMLButtonElement>('.buddy-btn')!;
+    const pupils = [...buddy.querySelectorAll<SVGCircleElement>('.pupil')];
+    const eyes = [...buddy.querySelectorAll<SVGGElement>('[data-eye]')];
+    let colour = 0, held = 0, start = 0, raf = 0, holding = false;
+
+    const burst = (n: number) => {
+      const r = btn.getBoundingClientRect();
+      (window as any).__sporeBurst?.(r.left + r.width / 2, r.top + r.height * 0.3, n);
+    };
+
+    // Eyes follow the cursor (or finger).
+    addEventListener('pointermove', (e) => {
+      eyes.forEach((eye, i) => {
+        const r = eye.getBoundingClientRect();
+        const dx = e.clientX - (r.left + r.width / 2), dy = e.clientY - (r.top + r.height / 2);
+        const d = Math.hypot(dx, dy) || 1, k = Math.min(4, d / 40);
+        pupils[i].style.transform = `translate(${(dx / d) * k}px, ${(dy / d) * k}px)`;
+      });
+    }, { passive: true });
+
+    // Blink now and then.
+    const blink = () => {
+      btn.classList.add('blink');
+      setTimeout(() => btn.classList.remove('blink'), 140);
+      setTimeout(blink, 2200 + Math.random() * 3200);
+    };
+    setTimeout(blink, 1800);
+
+    // Press and hold to grow.
+    const tick = () => {
+      held = Math.min(1, (performance.now() - start) / 1600);
+      btn.style.setProperty('--grow', String(1 + held * 0.45));
+      if (holding) raf = requestAnimationFrame(tick);
+    };
+    const press = () => {
+      if (holding) return;
+      holding = true; start = performance.now(); held = 0;
+      if (!calm) { btn.classList.add('holding'); raf = requestAnimationFrame(tick); }
+    };
+    const release = (fire: boolean) => {
+      if (!holding) return;
+      holding = false; cancelAnimationFrame(raf);
+      btn.classList.remove('holding');
+      btn.style.setProperty('--grow', '1');
+      if (!fire) return;
+      if (held > 0.15) {
+        burst(Math.round(12 + held * 48));
+      } else {
+        colour = (colour + 1) % caps.length;
+        btn.style.setProperty('--cap', caps[colour]);
+        btn.classList.remove('squish'); void btn.offsetWidth; btn.classList.add('squish');
+        burst(10);
+      }
+    };
+    btn.addEventListener('pointerdown', (e) => { btn.setPointerCapture(e.pointerId); press(); });
+    btn.addEventListener('pointerup', () => release(true));
+    btn.addEventListener('pointercancel', () => release(false));
+    btn.addEventListener('keydown', (e) => { if ((e.key === ' ' || e.key === 'Enter') && !e.repeat) { e.preventDefault(); press(); } });
+    btn.addEventListener('keyup', (e) => { if (e.key === ' ' || e.key === 'Enter') release(true); });
+    btn.addEventListener('contextmenu', (e) => e.preventDefault());
+  });
+</script>
