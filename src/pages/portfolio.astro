@@ -15,7 +15,17 @@ import { portfolio } from '../data/work';
       const Tag = p.href ? 'a' : 'div';
       return (
         <Tag class="card item" href={p.href || undefined}>
-          <Figure src={p.image} alt={`${p.company} project image`} ratio="16 / 10" />
+          {p.image ? (
+            <div class="media">
+              <Figure src={p.image} alt={`${p.company} project image`} ratio="16 / 10" />
+              <span class="chip"><img src={p.logo} alt={`${p.company} logo`} /></span>
+            </div>
+          ) : (
+            <div class="logo-panel">
+              <img src={p.logo} alt={p.logoName ? '' : `${p.company} logo`} />
+              {p.logoName && <span class="logo-name">{p.company}</span>}
+            </div>
+          )}
           <span class="eyebrow">{p.role}</span>
           <h3>{p.company}</h3>
           <p>{p.text}</p>
@@ -30,6 +40,25 @@ import { portfolio } from '../data/work';
   .work { padding-bottom: clamp(56px, 9vw, 112px); }
   .item { padding: 14px 14px 24px; }
   .item > :not(figure) { margin-inline: 12px; }
-  .item :global(figure) { margin-bottom: 20px; }
+  .media, .logo-panel { margin: 0 0 20px !important; }
+  .media { position: relative; }
+  .chip {
+    position: absolute; left: 14px; bottom: 14px; display: flex; align-items: center;
+    height: 48px; padding: 0 16px; border-radius: 12px; background: #fff;
+    box-shadow: 0 8px 20px rgba(31, 26, 23, .18);
+  }
+  .chip img { height: 24px; width: auto; }
+  .logo-panel {
+    aspect-ratio: 16 / 10; border-radius: var(--radius); display: flex; align-items: center; justify-content: center; gap: 14px;
+    background:
+      radial-gradient(circle at 25% 20%, var(--accent-soft), transparent 55%),
+      radial-gradient(circle at 80% 85%, color-mix(in srgb, var(--moss) 18%, transparent), transparent 55%),
+      var(--surface-2);
+    transition: transform .5s cubic-bezier(.2, .7, .2, 1);
+  }
+  .logo-panel img { max-width: 55%; max-height: 34%; width: auto; height: auto; object-fit: contain; transition: transform .5s cubic-bezier(.3, 1.4, .5, 1); }
+  .logo-name { font-family: var(--serif); font-size: 1.8rem; font-weight: 500; color: var(--ink); }
+  .logo-panel:has(.logo-name) img { max-height: 42%; max-width: 30%; }
+  a.item:hover .logo-panel img { transform: scale(1.06); }
   .item .eyebrow { margin-bottom: 8px; }
 </style>

@@ -11,13 +11,16 @@ export const art = [
   { title: 'Autumn', image: '/images/art/autumn.jpg' },
 ];
 
-export const portfolio = [
+// `logo` shows on each card: over the photo when there is one, otherwise on a tinted panel.
+// `logoName` prints the company name beside a symbol-only logo.
+export const portfolio: { company: string; role: string; text: string; href: string; image: string; logo: string; logoName?: boolean }[] = [
   {
     company: 'Shemsi',
     role: 'Brand Manager',
     text: 'Took a period underwear brand to 11× sales growth across six MENA markets.',
     href: '/shemsi-mena',
     image: '/images/about/speaking-auc.jpg',
+    logo: '/images/logos/shemsi.png',
   },
   {
     company: 'Jawda (Taager)',
@@ -25,6 +28,7 @@ export const portfolio = [
     text: "Launched Taager's B2C warranty and after-sales brand, serving 10K+ users a day.",
     href: '/jawda',
     image: '',
+    logo: '/images/logos/jawda.svg',
   },
   {
     company: 'Flextock',
@@ -32,6 +36,7 @@ export const portfolio = [
     text: 'Founding-team growth: 30+ high-value clients onboarded with 97% retention.',
     href: '/cv',
     image: '',
+    logo: '/images/logos/flextock.png',
   },
   {
     company: 'Vimail.io',
@@ -39,6 +44,8 @@ export const portfolio = [
     text: 'Freelance marketing work. Case study coming soon.',
     href: '',
     image: '',
+    logo: '/images/logos/vimail.png',
+    logoName: true,
   },
 ];
 
