@@ -84,6 +84,7 @@ export const services = [
 export const organizations: { name: string; logo?: string; tall?: boolean; showName?: boolean }[] = [
   { name: 'OneCommerce', logo: '/images/logos/onecommerce.png', showName: true },
   { name: 'DIKOCHI', logo: '/images/logos/dikochi.png' },
+  { name: 'Fotopia', logo: '/images/logos/fotopia.png' },
   { name: 'Shemsi', logo: '/images/logos/shemsi.png' },
   { name: 'Taager', logo: '/images/logos/taager.png' },
   { name: 'Jawda', logo: '/images/logos/jawda.svg' },
