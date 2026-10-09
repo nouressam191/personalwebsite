@@ -38,12 +38,13 @@ Anything without an image shows a labelled placeholder.
 
 ## Deploying
 
-The site is hosted on GitHub Pages. Every push to `main` rebuilds and publishes it
-(`.github/workflows/deploy.yml`). To publish a change:
+The site is hosted on Vercel (project `personalwebsite`, connected to this GitHub repo).
+Every push to `main` deploys to production automatically:
 
 ```sh
 git add -A && git commit -m "Describe the change" && git push
 ```
 
-DNS for nouressam.com is managed at GoDaddy: `www` is a CNAME to `nouressam191.github.io`,
-and the bare domain has A records for GitHub Pages (185.199.108.153 – 185.199.111.153).
+DNS for nouressam.com is managed at GoDaddy: `www` is a CNAME to
+`eb8fadb6d2f86bf1.vercel-dns-017.com`, and the bare domain has A records to
+`216.198.79.1` and `64.29.17.1` (as recommended by `vercel domains verify nouressam.com`).
