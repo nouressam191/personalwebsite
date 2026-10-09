@@ -16,10 +16,6 @@ import { shemsiProjects, shemsiSocial } from '../data/work';
     </div>
   </header>
 
-  <div class="wrap hero-shot">
-    <Figure src="/images/shemsi/photoshoot.jpg" alt="Shemsi product photoshoot with four models" ratio="21 / 9" position="50% 35%" />
-  </div>
-
   <section class="section wrap">
     <div class="grid three">
       {shemsiProjects.map((p) => (
@@ -64,7 +60,6 @@ import { shemsiProjects, shemsiSocial } from '../data/work';
   .proj { padding: 14px 14px 24px; }
   .proj > :not(figure) { margin-inline: 10px; }
   .proj :global(figure) { margin-bottom: 18px; }
-  .hero-shot { margin-bottom: 8px; }
   .social-head { display: grid; grid-template-columns: 1.2fr 1fr; gap: 40px; align-items: center; margin-bottom: 32px; }
   .ig { width: 100%; border-radius: var(--radius); box-shadow: 0 18px 40px rgba(31, 26, 23, .15); }
   @media (max-width: 760px) { .social-head { grid-template-columns: 1fr; } }
