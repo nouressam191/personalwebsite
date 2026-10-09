@@ -16,6 +16,10 @@ import { shemsiProjects, shemsiSocial } from '../data/work';
     </div>
   </header>
 
+  <div class="wrap hero-shot">
+    <Figure src="/images/shemsi/photoshoot.jpg" alt="Shemsi product photoshoot with four models" ratio="21 / 9" position="50% 35%" />
+  </div>
+
   <section class="section wrap">
     <div class="grid three">
       {shemsiProjects.map((p) => (
@@ -35,8 +39,14 @@ import { shemsiProjects, shemsiSocial } from '../data/work';
 
   <section class="section tint">
     <div class="wrap">
-      <span class="eyebrow">Social media growth</span>
-      <h2>Communities I grew</h2>
+      <div class="social-head">
+        <div>
+          <span class="eyebrow">Social media growth</span>
+          <h2>Communities I grew</h2>
+          <p class="lede">I grew Shemsi's audience across four platforms, passing 100K followers on Instagram alone.</p>
+        </div>
+        <img class="ig" src="/images/shemsi/instagram.jpg" alt="Shemsi Instagram profile with 101K followers" loading="lazy" decoding="async" />
+      </div>
       <div class="grid four">
         {shemsiSocial.map((s) => (
           <a class="card" href={s.href} target="_blank" rel="noopener">
@@ -54,5 +64,9 @@ import { shemsiProjects, shemsiSocial } from '../data/work';
   .proj { padding: 14px 14px 24px; }
   .proj > :not(figure) { margin-inline: 10px; }
   .proj :global(figure) { margin-bottom: 18px; }
+  .hero-shot { margin-bottom: 8px; }
+  .social-head { display: grid; grid-template-columns: 1.2fr 1fr; gap: 40px; align-items: center; margin-bottom: 32px; }
+  .ig { width: 100%; border-radius: var(--radius); box-shadow: 0 18px 40px rgba(31, 26, 23, .15); }
+  @media (max-width: 760px) { .social-head { grid-template-columns: 1fr; } }
   .stat { font-family: var(--serif); font-weight: 500; font-size: 1.5rem; line-height: 1.2; margin-top: 6px; }
 </style>

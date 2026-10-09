@@ -54,45 +54,45 @@ export const shemsiProjects = [
     title: 'Website content & SEO',
     text: "I wrote all the copy and did the SEO for Shemsi's website.",
     link: { href: 'https://www.myshemsi.com', label: 'Visit website' },
-    image: '',
+    image: '/images/shemsi/website.jpg',
   },
   {
     title: 'Product photoshoot',
     text: 'I led the photoshoot end to end: moodboard, photographer, stylist, make-up artist and models.',
     link: { href: '/photoshoot-highlights', label: 'See highlights' },
-    image: '',
+    image: '/images/shemsi/photoshoot.jpg',
   },
   {
     title: 'Influencer partnerships',
     text: 'Built a network of 150+ influencers creating content for Shemsi across Egypt, KSA, UAE and Morocco, contributing 40%+ of revenue.',
-    image: '',
+    image: '/images/shemsi/influencers.jpg',
   },
   {
     title: 'Offline marketing',
     text: 'Took part in 50+ pop-ups and local bazaars.',
-    image: '',
+    image: '/images/shemsi/pop-up.jpg',
   },
   {
     title: 'PR event: Shemsi Wellness Festival',
     text: 'Conceived and produced a wellness festival around the Shemsi brand.',
     link: { href: 'https://www.instagram.com/myshemsi.wellness/', label: 'Event Instagram' },
-    image: '',
+    image: '/images/shemsi/wellness-festival.jpg',
   },
   {
     title: 'PR event: press conference',
     text: 'For the partnership announcement between Shemsi and Tadwein for Gender Studies, I co-organized the conference and gave a speech on behalf of Shemsi.',
-    image: '/images/about/speaking-auc.jpg',
+    image: '/images/shemsi/press-conference.jpg',
   },
   {
     title: 'Social impact annual report',
     text: "Through continuous data analysis, I produced Shemsi's first annual impact report.",
     link: { href: 'https://drive.google.com/file/d/1lJygCaMHts0_gJU5IbIeMhJWnggO_AmR/view?usp=sharing', label: 'Read the report' },
-    image: '',
+    image: '/images/shemsi/impact-report.jpg',
   },
   {
     title: 'Cairo Rugby Team sponsorship',
     text: "Empowering women is at the core of Shemsi, so we sponsored the Cairo Rugby Team. It was a great brand fit.",
-    image: '',
+    image: '/images/shemsi/rugby-sponsorship.jpg',
   },
 ];
 
@@ -104,7 +104,7 @@ export const shemsiSocial = [
 ];
 
 export const campaigns = [
-  { title: 'Black Friday 2023', text: "Broke both the company's sales and profit benchmarks.", channels: 'Paid & organic Meta, Amazon, Noon, offline', image: '' },
+  { title: 'Black Friday 2023', text: "Broke both the company's sales and profit benchmarks.", channels: 'Paid & organic Meta, Amazon, Noon, offline', image: '/images/shemsi/black-friday.jpg' },
   { title: 'Ramadan 2024', text: "The most successful engagement campaign in the company's history.", channels: 'Meta platforms', image: '' },
   { title: 'Product awareness', text: 'Significantly increased contact and sales rates.', channels: 'Meta platforms & TikTok', image: '' },
   { title: 'Bundle & Save', text: '', channels: 'Meta paid ads', image: '' },
@@ -115,4 +115,7 @@ export const campaigns = [
   { title: "Valentine's Day", text: '', channels: 'Shemsi website & organic channels', image: '' },
 ];
 
-export const photoshoot = Array.from({ length: 8 }, (_, i) => ({ image: '', alt: `Shemsi photoshoot 2024, photo ${i + 1}` }));
+export const photoshoot = Array.from({ length: 8 }, (_, i) => ({
+  image: i === 0 ? '/images/shemsi/photoshoot.jpg' : '',
+  alt: `Shemsi photoshoot 2024, photo ${i + 1}`,
+}));
