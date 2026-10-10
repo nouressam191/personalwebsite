@@ -1,7 +1,7 @@
 export const site = {
   name: 'Nour Essam',
   url: 'https://www.nouressam.com',
-  tagline: 'Marketer, growth strategist, artist & home cook',
+  tagline: 'Full-stack marketing expert',
   description:
     'I am Nour Essam, a growth marketing and brand manager working across MENA and the US, and an artist and home cook in my spare time.',
 };
