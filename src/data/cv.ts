@@ -59,19 +59,6 @@ export const experience: Role[] = [
   },
   {
     period: '2026',
-    company: 'DIKOCHI',
-    location: 'UAE',
-    title: 'Growth Expert',
-    about: 'DIKOCHI is a UAE-based luxury outlet e-commerce store offering authentic designer fashion, footwear, bags and fragrances at outlet prices, alongside its own Dikochi Originals line.',
-    points: [
-      'Led the growth strategy for the online store, positioning the brand around authentic luxury at outlet prices and aligning paid media, content, CRM and conversion to grow revenue across the UAE.',
-      'Planned and managed performance marketing across Meta, TikTok and Google, with seasonal campaigns around key retail moments such as Ramadan, White Friday and DSF, optimizing for ROAS and acquisition cost.',
-      'Optimized the Shopify store from product pages to checkout, and built email and CRM journeys (back-in-stock, abandoned-cart and win-back flows) to lift conversion, order value and repeat purchases.',
-      'Grew the brand on Instagram, TikTok and Facebook through content and influencer collaborations, tracking performance in analytics dashboards to run weekly growth experiments.',
-    ],
-  },
-  {
-    period: '2026',
     company: 'Deniz Moda IQ',
     location: 'Iraq',
     title: 'Paid Ads & CRO Expert',
@@ -293,19 +280,6 @@ export const cvDocument = {
         'Managed event presence at **AI Everything Abu Dhabi 2026**, from planning to on-site execution.',
         'Revamped the website with new messaging, product pages and lead capture.',
         'Ran **social media, PR and paid ads** for the launch.',
-      ],
-    },
-    {
-      title: 'Growth Expert',
-      org: 'DIKOCHI (Luxury Outlet E-commerce)',
-      location: 'UAE',
-      period: '2026',
-      bullets: [
-        'Led **growth strategy** for a luxury outlet e-commerce store, aligning paid media, content, CRM and conversion.',
-        'Managed **performance marketing** across Meta, TikTok and Google, optimizing for ROAS and acquisition cost.',
-        'Optimized the **Shopify store experience** to improve conversion rate and average order value.',
-        'Built **email and CRM journeys** (abandoned cart, back-in-stock, win-back) to drive repeat purchases.',
-        'Planned **seasonal campaigns** around key UAE retail moments (Ramadan, White Friday, DSF).',
       ],
     },
     {

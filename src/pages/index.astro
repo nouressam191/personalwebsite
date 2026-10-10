@@ -142,9 +142,9 @@ const lifecycle = [
     <div class="wrap">
       <div data-reveal>
         <span class="eyebrow">How I can help you</span>
-        <h2>Four ways to work together</h2>
+        <h2>Three ways to work together</h2>
       </div>
-      <div class="grid four services">
+      <div class="grid three services">
         {services.map((s, i) => (
           <a class="card service" data-reveal style={`--d:${i * 0.1}s`} href={s.href} target={s.href.startsWith('http') ? '_blank' : undefined} rel={s.href.startsWith('http') ? 'noopener' : undefined}>
             <span class="num">0{i + 1}</span>

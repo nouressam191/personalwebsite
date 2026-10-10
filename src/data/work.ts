@@ -23,6 +23,14 @@ export const portfolio: { company: string; role: string; text: string; href: str
     logo: '/images/logos/shemsi.png',
   },
   {
+    company: 'Fotopia',
+    role: 'Product Marketing Lead & Consultant',
+    text: 'Launched FotoVerifai, an AI product, and DigitizeMe, with events at AI Everything Dubai and Abu Dhabi, AI Festival Dubai and GITEX Morocco.',
+    href: '/cv',
+    image: '',
+    logo: '/images/logos/fotopia.png',
+  },
+  {
     company: 'Jawda (Taager)',
     role: 'Marketing Manager',
     text: "Launched Taager's B2C warranty and after-sales brand, serving 10K+ users a day.",

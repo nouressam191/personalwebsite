@@ -70,12 +70,6 @@ export const services = [
     href: '/cv',
     cta: 'View my experience',
   },
-  {
-    title: 'Art for your walls',
-    text: 'Buy one of my ready paintings, or commission a custom piece made by hand for your home or as a one-of-a-kind gift.',
-    href: '/art-projects',
-    cta: 'Browse my art',
-  },
 ];
 
 // Logo carousel on the homepage. Entries without a `logo` render as a wordmark;
@@ -83,7 +77,6 @@ export const services = [
 // `showName` prints the name next to a symbol-only logo.
 export const organizations: { name: string; logo?: string; tall?: boolean; showName?: boolean }[] = [
   { name: 'OneCommerce', logo: '/images/logos/onecommerce.png', showName: true },
-  { name: 'DIKOCHI', logo: '/images/logos/dikochi.png' },
   { name: 'Fotopia', logo: '/images/logos/fotopia.png' },
   { name: 'Shemsi', logo: '/images/logos/shemsi.png' },
   { name: 'Taager', logo: '/images/logos/taager.png' },
