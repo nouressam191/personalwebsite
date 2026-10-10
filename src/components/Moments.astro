@@ -1,0 +1,107 @@
+---
+// Horizontal, swipeable strip of real project photos. Drag with a mouse,
+// swipe on touch, or use the arrow buttons.
+const moments = [
+  { src: '/images/shemsi/wellness-festival.jpg', title: 'Shemsi Wellness Festival', tag: 'Events', href: '/shemsi-mena' },
+  { src: '/images/shemsi/press-conference.jpg', title: 'Shemsi × Tadwein partnership launch', tag: 'PR', href: '/shemsi-mena' },
+  { src: '/images/shemsi/pop-up.jpg', title: 'Pop-ups and local bazaars', tag: 'Offline marketing', href: '/shemsi-mena' },
+  { src: '/images/shemsi/influencers.jpg', title: '150+ creator network', tag: 'Influencer marketing', href: '/shemsi-mena' },
+  { src: '/images/shemsi/rugby-sponsorship.jpg', title: 'Women’s rugby sponsorship', tag: 'Partnerships', href: '/shemsi-mena' },
+  { src: '/images/shemsi/photoshoot.jpg', title: 'Product photoshoot, art-directed end to end', tag: 'Creative direction', href: '/photoshoot-highlights' },
+  { src: '/images/shemsi/website.jpg', title: 'Website copy and SEO', tag: 'Content', href: '/shemsi-mena' },
+];
+---
+<section class="moments" aria-labelledby="moments-title">
+  <div class="wrap moments-head" data-reveal>
+    <div>
+      <span class="eyebrow">Moments from the field</span>
+      <h2 id="moments-title">Work you can see</h2>
+    </div>
+    <div class="arrows">
+      <button class="arrow" data-dir="-1" aria-label="Previous">←</button>
+      <button class="arrow" data-dir="1" aria-label="Next">→</button>
+    </div>
+  </div>
+  <ul class="strip" tabindex="0" aria-label="Project photos">
+    {moments.map((m, i) => (
+      <li class="moment" style={`--i:${i}`}>
+        <a href={m.href} draggable="false">
+          <div class="shot"><img src={m.src} alt={m.title} loading="lazy" decoding="async" draggable="false" /></div>
+          <span class="tag">{m.tag}</span>
+          <span class="title">{m.title}</span>
+        </a>
+      </li>
+    ))}
+  </ul>
+</section>
+
+<style>
+  .moments { padding: clamp(64px, 9vw, 112px) 0; overflow: hidden; }
+  .moments-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; margin-bottom: 28px; }
+  .moments-head h2 { margin: 0; }
+  .arrows { display: flex; gap: 8px; }
+  .arrow {
+    width: 48px; height: 48px; border-radius: 50%; border: 1.5px solid var(--ink); background: transparent;
+    font-size: 1.1rem; color: var(--ink); cursor: pointer; transition: background .2s, color .2s;
+  }
+  .arrow:hover { background: var(--ink); color: var(--bg); }
+  .strip {
+    --edge: max(var(--gutter), calc((100vw - var(--wrap)) / 2 + var(--gutter)));
+    list-style: none; margin: 0; padding: 8px var(--edge) 24px; scroll-padding-inline: var(--edge);
+    display: flex; gap: 20px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none;
+    cursor: grab; outline: none;
+  }
+  .strip::-webkit-scrollbar { display: none; }
+  .strip.dragging { cursor: grabbing; scroll-snap-type: none; }
+  .strip.dragging a { pointer-events: none; }
+  .moment { flex: none; width: clamp(260px, 34vw, 440px); scroll-snap-align: start; }
+  .moment a { display: block; text-decoration: none; color: inherit; user-select: none; }
+  .shot { overflow: hidden; border-radius: 18px; aspect-ratio: 16 / 10; background: var(--surface-2); box-shadow: 0 14px 34px rgba(31, 26, 23, .12); }
+  .shot img { width: 100%; height: 100%; object-fit: cover; transition: scale .7s cubic-bezier(.2, .7, .2, 1); }
+  .moment a:hover .shot img, .moment a:focus-visible .shot img { scale: 1.06; }
+  .tag { display: block; margin-top: 14px; font: 600 .72rem var(--sans); letter-spacing: .14em; text-transform: uppercase; color: var(--accent); }
+  .title { display: block; margin-top: 4px; font-family: var(--serif); font-size: 1.25rem; line-height: 1.3; }
+  :global(.js) .moment a { opacity: 0; translate: 60px 0; transition: opacity .8s ease calc(var(--i) * .08s), translate .9s cubic-bezier(.2, .7, .2, 1) calc(var(--i) * .08s); }
+  :global(.js) .moments.is-in .moment a { opacity: 1; translate: 0 0; }
+  @media (max-width: 600px) { .arrows { display: none; } }
+  @media (prefers-reduced-motion: reduce) {
+    :global(.js) .moment a { opacity: 1; translate: none; transition: none; }
+    .shot img { transition: none; }
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('.moments').forEach((section) => {
+    const strip = section.querySelector<HTMLElement>('.strip')!;
+    new IntersectionObserver(([e], obs) => {
+      if (e.isIntersecting) { section.classList.add('is-in'); obs.disconnect(); }
+    }, { threshold: 0.2 }).observe(section);
+
+    section.querySelectorAll<HTMLButtonElement>('.arrow').forEach((b) => {
+      b.addEventListener('click', () => {
+        const card = strip.querySelector<HTMLElement>('.moment')!;
+        strip.scrollBy({ left: Number(b.dataset.dir) * (card.offsetWidth + 20), behavior: 'smooth' });
+      });
+    });
+
+    // Drag to scroll with a mouse.
+    let down = false, startX = 0, startLeft = 0, moved = 0;
+    strip.addEventListener('pointerdown', (e) => {
+      if (e.pointerType !== 'mouse') return;
+      down = true; moved = 0; startX = e.clientX; startLeft = strip.scrollLeft;
+    });
+    addEventListener('pointermove', (e) => {
+      if (!down) return;
+      const dx = e.clientX - startX;
+      moved = Math.max(moved, Math.abs(dx));
+      if (moved > 5) strip.classList.add('dragging');
+      strip.scrollLeft = startLeft - dx;
+    });
+    addEventListener('pointerup', () => {
+      if (!down) return;
+      down = false;
+      requestAnimationFrame(() => strip.classList.remove('dragging'));
+    });
+    strip.addEventListener('click', (e) => { if (moved > 5) e.preventDefault(); }, true);
+  });
+</script>

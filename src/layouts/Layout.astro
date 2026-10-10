@@ -187,6 +187,36 @@ const ogImage = new URL('/og-image.jpg', site.url).href;
       };
       (window as any).__sporeBurst = sporeBurst;
 
+      if (!calm && finePointer) {
+        // Hero photo tilts toward the cursor with a light sheen.
+        document.querySelectorAll<HTMLElement>('[data-tilt]').forEach((el) => {
+          el.addEventListener('pointermove', (e) => {
+            const r = el.getBoundingClientRect();
+            const x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
+            el.classList.add('tilting');
+            el.style.setProperty('--ry', `${((x - 0.5) * 12).toFixed(2)}deg`);
+            el.style.setProperty('--rx', `${((0.5 - y) * 10).toFixed(2)}deg`);
+            el.style.setProperty('--gx', `${(x * 100).toFixed(0)}%`);
+            el.style.setProperty('--gy', `${(y * 100).toFixed(0)}%`);
+          });
+          el.addEventListener('pointerleave', () => {
+            el.classList.remove('tilting');
+            el.style.setProperty('--rx', '0deg');
+            el.style.setProperty('--ry', '0deg');
+          });
+        });
+
+        // Main buttons lean toward the cursor.
+        document.querySelectorAll<HTMLElement>('.btn.primary, .og-btn').forEach((b) => {
+          b.addEventListener('pointermove', (e) => {
+            const r = b.getBoundingClientRect();
+            const dx = e.clientX - (r.left + r.width / 2), dy = e.clientY - (r.top + r.height / 2);
+            b.style.translate = `${(dx * 0.22).toFixed(1)}px ${(dy * 0.3).toFixed(1)}px`;
+          });
+          b.addEventListener('pointerleave', () => { b.style.translate = ''; });
+        });
+      }
+
       // Click a mushroom to release spores.
       document.addEventListener('click', (ev) => {
         const m = (ev.target as Element).closest?.('[data-burst]');

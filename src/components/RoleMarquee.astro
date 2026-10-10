@@ -1,0 +1,66 @@
+---
+// Big serif ticker of what I do, separated by mushrooms. Speeds up and follows
+// the scroll direction while you scroll.
+import Mushroom from './Mushroom.astro';
+import { roles } from '../data/site';
+
+const variants = ['amanita', 'chanterelle', 'parasol', 'button'] as const;
+---
+<div class="ticker" aria-label={roles.join(', ')}>
+  <div class="ticker-track" aria-hidden="true">
+    {[0, 1].map(() => (
+      <div class="ticker-set">
+        {roles.map((r, i) => (
+          <>
+            <span class:list={['word', { outline: i % 2 === 1 }]}>{r}</span>
+            <Mushroom variant={variants[i % variants.length]} size={44} class="sep" />
+          </>
+        ))}
+      </div>
+    ))}
+  </div>
+</div>
+
+<style>
+  .ticker { overflow: hidden; padding-block: clamp(28px, 4vw, 44px); border-block: 1px solid var(--line); background: var(--bg); }
+  .ticker-track { display: flex; width: max-content; will-change: transform; }
+  .ticker-set { display: flex; align-items: center; gap: clamp(18px, 2.4vw, 32px); padding-right: clamp(18px, 2.4vw, 32px); }
+  .word {
+    font-family: var(--serif); font-weight: 500; white-space: nowrap; line-height: 1;
+    font-size: clamp(2rem, 5.2vw, 4.2rem); letter-spacing: -0.02em; color: var(--ink);
+  }
+  .word.outline { color: transparent; -webkit-text-stroke: 1.2px var(--ink); font-style: italic; }
+  .ticker :global(.sep) { flex: none; }
+  @media (prefers-reduced-motion: reduce) {
+    .ticker-track { width: auto; transform: none !important; }
+    .ticker-set { flex-wrap: wrap; justify-content: center; row-gap: 12px; padding-inline: var(--gutter); }
+    .ticker-set + .ticker-set { display: none; }
+  }
+</style>
+
+<script>
+  const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.querySelectorAll<HTMLElement>('.ticker-track').forEach((track) => {
+    if (calm) return;
+    const set = track.firstElementChild as HTMLElement;
+    let offset = 0, dir = -1, boost = 0, lastY = scrollY, visible = true;
+    new IntersectionObserver(([e]) => { visible = e.isIntersecting; }).observe(track);
+    addEventListener('scroll', () => {
+      const v = scrollY - lastY; lastY = scrollY;
+      if (v) dir = v > 0 ? -1 : 1;
+      boost = Math.min(14, boost + Math.abs(v) * 0.12);
+    }, { passive: true });
+    const tick = () => {
+      if (visible) {
+        const w = set.offsetWidth;
+        offset += dir * (0.6 + boost);
+        if (offset <= -w) offset += w;
+        if (offset > 0) offset -= w;
+        track.style.transform = `translate3d(${offset.toFixed(1)}px, 0, 0)`;
+      }
+      boost *= 0.92;
+      requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  });
+</script>

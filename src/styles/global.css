@@ -136,3 +136,11 @@ svg.mushroom {
   svg.mushroom { rotate: none; transition: none; }
   .js [data-grow] svg.mushroom { scale: 1 1; transition: none; }
 }
+
+/* Magnetic buttons ease back into place. */
+.btn.primary, .og-btn { transition: background .2s, color .2s, transform .2s, translate .35s cubic-bezier(.3, 1.4, .5, 1); }
+
+::selection { background: var(--accent); color: #fff; }
+
+@media (prefers-reduced-motion: reduce) {
+}
